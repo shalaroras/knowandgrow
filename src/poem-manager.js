@@ -27,7 +27,7 @@ app.innerHTML = `
     <section class="workspace" id="workspace" hidden>
       <div class="workspace-top"><div><p class="eyebrow">Your collection</p><h1>Shape the <i>words.</i></h1></div><div class="workspace-actions"><span id="save-state">Everything is published</span><button id="new-poem">＋ New poem</button><button class="primary" id="publish" disabled>Publish changes</button></div></div>
       <div class="manager-grid"><aside><div id="poem-list"></div></aside><section class="editor-card">
-        <form id="poem-form"><input type="hidden" name="originalSlug"><div class="two-fields"><label>Title<input name="title" required></label><label>Theme<input name="theme" required placeholder="Hope, Growth, Courage…"></label></div><div class="two-fields"><label>Date<input name="date" required placeholder="15 October 2026"></label><label>URL name<input name="slug" required pattern="[a-z0-9]+(?:-[a-z0-9]+)*" placeholder="my-poem-title"></label></div><label>Short introduction<textarea name="introduction" required rows="2"></textarea></label><label>Poem<textarea name="lines" required rows="14" placeholder="Write each line naturally. Leave a blank line between stanzas."></textarea></label><div class="form-buttons"><button type="button" id="cancel-edit">Clear</button><button class="primary" type="submit">Keep this poem</button></div></form>
+        <form id="poem-form"><input type="hidden" name="originalSlug"><div class="two-fields"><label>Title<input name="title" required></label><label>Theme<input name="theme" required placeholder="Hope, Growth, Courage…"></label></div><div class="two-fields"><label>Date<input name="date" required placeholder="15 October 2026"></label><label>URL name<input name="slug" required placeholder="my-poem-title"><small>Automatically formatted with lowercase letters and hyphens.</small></label></div><label>Short introduction<textarea name="introduction" required rows="2"></textarea></label><label>Poem<textarea name="lines" required rows="14" placeholder="Write each line naturally. Leave a blank line between stanzas."></textarea></label><div class="form-buttons"><button type="button" id="cancel-edit">Clear</button><button class="primary" type="submit">Keep this poem</button></div></form>
         <div class="preview"><p class="eyebrow">Live preview</p><h2 id="preview-title">Your poem title</h2><div id="preview-lines">Your lines will appear here.</div></div>
       </section></div>
       <p class="publish-status" id="publish-status"></p>
@@ -122,7 +122,7 @@ form.addEventListener('input', event => {
 form.addEventListener('submit', event => {
   event.preventDefault()
   const data = Object.fromEntries(new FormData(form))
-  const poem = { slug:data.slug.trim(), title:data.title.trim(), date:data.date.trim(), theme:data.theme.trim(), introduction:data.introduction.trim(), lines:data.lines.trim() }
+  const poem = { slug:slugify(data.slug || data.title), title:data.title.trim(), date:data.date.trim(), theme:data.theme.trim(), introduction:data.introduction.trim(), lines:data.lines.trim() }
   const duplicate = poems.some((item, index) => item.slug === poem.slug && index !== editingIndex)
   if (duplicate) { document.querySelector('#publish-status').textContent = 'That URL name is already used. Choose another.'; return }
   if (editingIndex === null) poems.unshift(poem); else poems[editingIndex] = poem
@@ -146,6 +146,7 @@ function escapeHtml(value) { const node = document.createElement('div'); node.te
 
 document.querySelector('#connect').addEventListener('click', connect)
 document.querySelector('#token').addEventListener('keydown', event => { if (event.key === 'Enter') connect() })
+form.elements.slug.addEventListener('blur', event => { event.target.value = slugify(event.target.value || form.elements.title.value) })
 document.querySelector('#new-poem').addEventListener('click', () => { resetForm(); form.scrollIntoView({behavior:'smooth'}) })
 document.querySelector('#cancel-edit').addEventListener('click', resetForm)
 document.querySelector('#publish').addEventListener('click', publish)
