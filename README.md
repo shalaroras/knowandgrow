@@ -29,30 +29,11 @@ The Writer's Desk is a browser prototype. Drafts and images stay in that browser
 
 ### Add a poem
 
-The permanent poem collection lives in [`src/poems-data.js`](src/poems-data.js). You can update it without installing any software:
+Open the website's [Poem Manager](https://knowandgrow.in/poems/manage/) to add, edit, preview, delete and publish poems without editing code.
 
-1. Open `src/poems-data.js` in the GitHub repository.
-2. Select the pencil icon (**Edit this file**).
-3. Copy an existing poem block and paste it at the top of the `poems` list.
-4. Change its `slug`, `title`, `date`, `theme`, `introduction`, and `lines`.
-5. Use `\n` for a new line and `\n\n` between stanzas. Keep every `slug` unique and lowercase, using hyphens instead of spaces.
-6. Select **Commit changes**. GitHub Actions will publish the poem automatically.
+The manager connects directly to GitHub with a fine-grained personal access token. Create a token that can access only the `knowandgrow` repository and grant only **Contents: Read and write**. The website keeps the token in memory only; refreshing or closing the page signs you out. Never commit a token to the repository or send it through email or chat.
 
-Template:
-
-```js
-{
-  slug: 'your-poem-title',
-  title: 'Your poem title',
-  date: '15 October 2026',
-  theme: 'Hope',
-  introduction: 'A short sentence that introduces the poem.',
-  lines: `First line
-Second line
-
-First line of the next stanza`
-},
-```
+Published content is stored in [`public/content/poems.json`](public/content/poems.json). Each publication creates a normal GitHub commit and triggers the existing deployment workflow.
 
 ## Monetization path
 

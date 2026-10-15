@@ -11,6 +11,7 @@ export default defineConfig({
       input: {
         main: resolve(rootDirectory, 'index.html'),
         poems: resolve(rootDirectory, 'poems/index.html'),
+        poemManager: resolve(rootDirectory, 'poems/manage/index.html'),
       },
     },
   },
